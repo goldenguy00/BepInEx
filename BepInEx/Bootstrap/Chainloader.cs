@@ -13,6 +13,7 @@ using Mono.Cecil;
 using MonoMod.Utils;
 using UnityEngine;
 using Logger = BepInEx.Logging.Logger;
+using Newtonsoft.Json;
 
 namespace BepInEx.Bootstrap
 {
@@ -28,20 +29,28 @@ namespace BepInEx.Bootstrap
 
 		private static readonly List<BaseUnityPlugin> _plugins = new List<BaseUnityPlugin>();
 
-		// In some rare cases calling Application.unityVersion seems to cause MissingMethodException
-		// if a preloader patch applies Harmony patch to Chainloader.Initialize.
-		// The issue could be related to BepInEx being compiled against Unity 5.6 version of UnityEngine.dll,
-		// but the issue is apparently present with both official Harmony and HarmonyX
-		// We specifically prevent inlining to prevent early resolving
-		// TODO: Figure out better version obtaining mechanism (e.g. from globalmanagers)
-		private static string UnityVersion
+        // In some rare cases calling Application.unityVersion seems to cause MissingMethodException
+        // if a preloader patch applies Harmony patch to Chainloader.Initialize.
+        // The issue could be related to BepInEx being compiled against Unity 5.6 version of UnityEngine.dll,
+        // but the issue is apparently present with both official Harmony and HarmonyX
+        // We specifically prevent inlining to prevent early resolving
+        // TODO: Figure out better version obtaining mechanism (e.g. from globalmanagers)
+        private static string UnityVersion
 		{
 			[MethodImpl(MethodImplOptions.NoInlining)]
 			get => Application.unityVersion;
 		}
 
-		// Check above for NoInlining reasoning
-		private static bool IsHeadless
+        internal static void InitDiskLogging()
+        {
+			if (ConfigDiskLogging.Value)
+			{
+                Logger.Listeners.Add(new DiskLogListener("LogOutput.log", ConfigDiskConsoleDisplayedLevel.Value, ConfigDiskAppend.Value, ConfigDiskWriteUnityLog.Value));
+            }
+        }
+
+        // Check above for NoInlining reasoning
+        private static bool IsHeadless
 		{
 			get
 			{
@@ -59,7 +68,7 @@ namespace BepInEx.Bootstrap
 			[MethodImpl(MethodImplOptions.NoInlining)]
 			get => isEditor ?? (isEditor = Application.isEditor) ?? false;
 		}
-		
+
 		/// <summary>
 		/// List of all <see cref="BepInPlugin"/> loaded via the chainloader.
 		/// </summary>
@@ -100,7 +109,7 @@ namespace BepInEx.Bootstrap
 				return;
 
 			ThreadingHelper.Initialize();
-			
+
 			// Set vitals
 			if (gameExePath != null)
 			{
@@ -117,9 +126,6 @@ namespace BepInEx.Bootstrap
 			}
 
 			Logger.InitializeInternalLoggers();
-
-			if (ConfigDiskLogging.Value)
-				Logger.Listeners.Add(new DiskLogListener("LogOutput.log", ConfigDiskConsoleDisplayedLevel.Value, ConfigDiskAppend.Value, ConfigDiskWriteUnityLog.Value));
 
 			if (!TraceLogSource.IsListening)
 				Logger.Sources.Add(TraceLogSource.CreateSource());
@@ -148,34 +154,41 @@ namespace BepInEx.Bootstrap
 
 			_initialized = true;
 		}
-		
+
 		private static void ReplayPreloaderLogs(ICollection<LogEventArgs> preloaderLogEvents)
 		{
 			if (preloaderLogEvents == null)
 				return;
-			
+
 			var unityLogger = new UnityLogListener();
 			Logger.Listeners.Add(unityLogger);
-			
+
 			// Temporarily disable the console log listener (if there is one from preloader) as we replay the preloader logs
 			var logListener = Logger.Listeners.FirstOrDefault(logger => logger is ConsoleLogListener);
-			
+			var diskLogListener = Logger.Listeners.FirstOrDefault(logger => logger is DiskLogListener);
+
 			if (logListener != null)
 				Logger.Listeners.Remove(logListener);
 
-			// Write preloader log events if there are any, including the original log source name
-			var preloaderLogSource = Logger.CreateLogSource("Preloader");
+			if (diskLogListener != null)
+				Logger.Listeners.Remove(diskLogListener);
+
+            // Write preloader log events if there are any, including the original log source name
+            var preloaderLogSource = Logger.CreateLogSource("Preloader");
 
 			foreach (var preloaderLogEvent in preloaderLogEvents)
 				Logger.InternalLogEvent(preloaderLogSource, preloaderLogEvent);
 
-			Logger.Sources.Remove(preloaderLogSource);	
+			Logger.Sources.Remove(preloaderLogSource);
 
 			Logger.Listeners.Remove(unityLogger);
-			
-			if (logListener != null)
+
+            if (diskLogListener != null)
+                Logger.Listeners.Add(diskLogListener);
+
+            if (logListener != null)
 				Logger.Listeners.Add(logListener);
-		}
+        }
 
 		private static Regex allowedGuidRegex { get; } = new Regex(@"^[a-zA-Z0-9\._\-]+$");
 
@@ -379,7 +392,7 @@ namespace BepInEx.Bootstrap
 					foreach (var dependency in pluginInfo.Dependencies)
 					{
 						bool IsHardDependency(BepInDependency dep) => (dep.Flags & BepInDependency.DependencyFlags.HardDependency) != 0;
-						
+
 						// If the dependency wasn't already processed, it's missing altogether
 						bool dependencyExists = processedPlugins.TryGetValue(dependency.DependencyGUID, out var pluginVersion);
 						if (!dependencyExists || pluginVersion < dependency.MinimumVersion)
@@ -423,18 +436,20 @@ namespace BepInEx.Bootstrap
 					}
 
 					try
-					{
-						Logger.LogInfo($"Loading [{pluginInfo}]");
+                    {
+                        TryLogPluginThunderstoreManifest(pluginInfo);
 
-						if (!loadedAssemblies.TryGetValue(pluginInfo.Location, out var ass))
-							loadedAssemblies[pluginInfo.Location] = ass = Assembly.LoadFile(pluginInfo.Location);
+                        Logger.LogInfo($"Loading [{pluginInfo}]");
 
-						PluginInfos[pluginGUID] = pluginInfo;
-						pluginInfo.Instance = (BaseUnityPlugin)ManagerObject.AddComponent(ass.GetType(pluginInfo.TypeName));
+                        if (!loadedAssemblies.TryGetValue(pluginInfo.Location, out var ass))
+                            loadedAssemblies[pluginInfo.Location] = ass = Assembly.LoadFile(pluginInfo.Location);
 
-						_plugins.Add(pluginInfo.Instance);
-					}
-					catch (Exception ex)
+                        PluginInfos[pluginGUID] = pluginInfo;
+                        pluginInfo.Instance = (BaseUnityPlugin)ManagerObject.AddComponent(ass.GetType(pluginInfo.TypeName));
+
+                        _plugins.Add(pluginInfo.Instance);
+                    }
+                    catch (Exception ex)
 					{
 						invalidPlugins.Add(pluginGUID);
 						PluginInfos.Remove(pluginGUID);
@@ -464,9 +479,61 @@ namespace BepInEx.Bootstrap
 			_loaded = true;
 		}
 
-		#region Config
-		
-		internal static readonly ConfigEntry<bool> ConfigHideBepInExGOs = ConfigFile.CoreConfig.Bind(
+		private static void TryLogPluginThunderstoreManifest(PluginInfo pluginInfo)
+		{
+			try
+			{
+				const string ThunderstoreManifestJsonFileName = "manifest.json";
+				string manifestPath = null;
+
+				var currentFolder = new DirectoryInfo(Path.GetDirectoryName(pluginInfo.Location));
+
+				while (true)
+				{
+					if (currentFolder.FullName == Paths.PluginPath ||
+						currentFolder.Parent == null)
+					{
+						break;
+					}
+
+					var potentialManifestPath = Path.Combine(currentFolder.FullName, ThunderstoreManifestJsonFileName);
+					if (File.Exists(potentialManifestPath))
+					{
+						manifestPath = potentialManifestPath;
+						break;
+					}
+
+					currentFolder = currentFolder.Parent;
+				}
+
+				if (manifestPath != null)
+				{
+					var thunderstoreManifestV1 = JsonConvert.DeserializeObject<ThunderstoreManifestV1>(File.ReadAllText(manifestPath));
+
+					const string InvalidTeamName = "|";
+					const char separator = '-';
+					var teamNameDelimiter = separator + thunderstoreManifestV1.Name;
+
+					var team = InvalidTeamName;
+					var directoryName = new DirectoryInfo(Path.GetDirectoryName(manifestPath)).Name;
+					if (directoryName.Contains(teamNameDelimiter))
+					{
+						team = directoryName.Split(new string[] { teamNameDelimiter }, StringSplitOptions.RemoveEmptyEntries)[0];
+					}
+
+					const string ThunderstoreManifestPrefix = "TS Manifest: ";
+					Logger.Log(LogLevel.Info, $"{ThunderstoreManifestPrefix}{team}{separator}{thunderstoreManifestV1.Name}{separator}{thunderstoreManifestV1.VersionNumber}");
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.Log(LogLevel.Debug, $"Failed reading TS Manifest {ex}");
+			}
+		}
+
+        #region Config
+
+        internal static readonly ConfigEntry<bool> ConfigHideBepInExGOs = ConfigFile.CoreConfig.Bind(
 			"Chainloader", "HideManagerGameObject",
 			false,
 			new StringBuilder()
@@ -479,7 +546,7 @@ namespace BepInEx.Bootstrap
 			"Logging", "UnityLogListening",
 			true,
 			"Enables showing unity log messages in the BepInEx logging system.");
-		
+
 		private static readonly ConfigEntry<bool> ConfigDiskWriteUnityLog = ConfigFile.CoreConfig.Bind(
 			"Logging.Disk", "WriteUnityLog",
 			false,
