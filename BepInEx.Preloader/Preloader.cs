@@ -281,12 +281,12 @@ namespace BepInEx.Preloader
 
 		private static readonly ConfigEntry<string> ConfigEntrypointAssembly = ConfigFile.CoreConfig.Bind(
 			"Preloader.Entrypoint", "Assembly",
-			IsPostUnity2017 ? "UnityEngine.CoreModule.dll" : "UnityEngine.dll",
+			"RoR2.dll",
 			"The local filename of the assembly to target.");
 
 		private static readonly ConfigEntry<string> ConfigEntrypointType = ConfigFile.CoreConfig.Bind(
 			"Preloader.Entrypoint", "Type",
-			"Application",
+			"FlashWindow",
 			"The name of the type in the entrypoint assembly to search for the entrypoint method.");
 
 		private static readonly ConfigEntry<string> ConfigEntrypointMethod = ConfigFile.CoreConfig.Bind(

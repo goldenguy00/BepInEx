@@ -549,7 +549,7 @@ namespace BepInEx.Bootstrap
 
 		private static readonly ConfigEntry<bool> ConfigDiskWriteUnityLog = ConfigFile.CoreConfig.Bind(
 			"Logging.Disk", "WriteUnityLog",
-			false,
+			true,
 			"Include unity log messages in log file output.");
 
 		private static readonly ConfigEntry<bool> ConfigDiskAppend = ConfigFile.CoreConfig.Bind(
@@ -564,7 +564,7 @@ namespace BepInEx.Bootstrap
 
 		private static readonly ConfigEntry<LogLevel> ConfigDiskConsoleDisplayedLevel = ConfigFile.CoreConfig.Bind(
 			"Logging.Disk", "LogLevels",
-			LogLevel.Fatal | LogLevel.Error | LogLevel.Message | LogLevel.Info | LogLevel.Warning,
+			LogLevel.All,
 			"Which log leves are saved to the disk log output.");
 		#endregion
 	}
