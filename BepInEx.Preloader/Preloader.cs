@@ -279,17 +279,17 @@ namespace BepInEx.Preloader
 
 		#region Config
 
-		private static readonly ConfigEntry<string> ConfigEntrypointAssembly = ConfigFile.CoreConfig.Bind(
+		private static readonly ConfigEntry<string> ConfigEntrypointAssembly = ConfigFile.DontModifyCoreConfig.Bind(
 			"Preloader.Entrypoint", "Assembly",
 			"RoR2.dll",
 			"The local filename of the assembly to target.");
 
-		private static readonly ConfigEntry<string> ConfigEntrypointType = ConfigFile.CoreConfig.Bind(
+		private static readonly ConfigEntry<string> ConfigEntrypointType = ConfigFile.DontModifyCoreConfig.Bind(
 			"Preloader.Entrypoint", "Type",
 			"FlashWindow",
 			"The name of the type in the entrypoint assembly to search for the entrypoint method.");
 
-		private static readonly ConfigEntry<string> ConfigEntrypointMethod = ConfigFile.CoreConfig.Bind(
+		private static readonly ConfigEntry<string> ConfigEntrypointMethod = ConfigFile.DontModifyCoreConfig.Bind(
 			"Preloader.Entrypoint", "Method",
 			".cctor",
 			"The name of the method in the specified entrypoint assembly and type to hook and load Chainloader from.");

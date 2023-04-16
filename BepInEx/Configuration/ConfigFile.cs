@@ -18,8 +18,11 @@ namespace BepInEx.Configuration
 
 		internal static ConfigFile CoreConfig { get; } = new ConfigFile(Paths.BepInExConfigPath, true);
 
+		// Config file not supposed to be changed by users, contains core core config
+		internal static ConfigFile DontModifyCoreConfig { get; } = new ConfigFile(Paths.BepInExDontModifyConfigPath, true);
+
 		/// <summary>
-		/// All config entries inside 
+		/// All config entries inside
 		/// </summary>
 		protected Dictionary<ConfigDefinition, ConfigEntryBase> Entries { get; } = new Dictionary<ConfigDefinition, ConfigEntryBase>();
 
@@ -39,10 +42,10 @@ namespace BepInEx.Configuration
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// Create an array with all config entries inside of this config file. Should be only used for metadata purposes.
-		/// If you want to access and modify an existing setting then use <see cref="AddSetting{T}(ConfigDefinition,T,ConfigDescription)"/> 
+		/// If you want to access and modify an existing setting then use <see cref="AddSetting{T}(ConfigDefinition,T,ConfigDescription)"/>
 		/// instead with no description.
 		/// </summary>
 		[Obsolete("Use Values instead")]
@@ -58,7 +61,7 @@ namespace BepInEx.Configuration
 		public string ConfigFilePath { get; }
 
 		/// <summary>
-		/// If enabled, writes the config to disk every time a value is set. 
+		/// If enabled, writes the config to disk every time a value is set.
 		/// If disabled, you have to manually use <see cref="Save"/> or the changes will be lost!
 		/// </summary>
 		public bool SaveOnConfigSet { get; set; } = true;
@@ -522,7 +525,7 @@ namespace BepInEx.Configuration
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="section"></param>
 		/// <param name="key"></param>

@@ -23,6 +23,7 @@ namespace BepInEx
 			BepInExRootPath = bepinRootPath ?? Path.Combine(GameRootPath, "BepInEx");
 			ConfigPath = Path.Combine(BepInExRootPath, "config");
 			BepInExConfigPath = Path.Combine(ConfigPath, "BepInEx.cfg");
+			BepInExDontModifyConfigPath = Path.Combine(ConfigPath, "BepInEx.DO_NOT_MODIFY.cfg");
 			PluginPath = Path.Combine(BepInExRootPath, "plugins");
 			PatcherPluginPath = Path.Combine(BepInExRootPath, "patchers");
 			BepInExAssemblyDirectory = Path.Combine(BepInExRootPath, "core");
@@ -89,10 +90,15 @@ namespace BepInEx
 		/// </summary>
 		public static string BepInExConfigPath { get; private set; }
 
-		/// <summary>
+        /// <summary>
+        ///		The path to the global BepInEx configuration file.
+        /// </summary>
+        public static string BepInExDontModifyConfigPath { get; private set; }
+
+        /// <summary>
         ///		The path to temporary cache files.
         /// </summary>
-		public static string CachePath { get; private set; }
+        public static string CachePath { get; private set; }
 
 		/// <summary>
 		///     The path to the patcher plugin folder which resides in the BepInEx folder.
