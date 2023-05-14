@@ -25,7 +25,11 @@ icon.png
 
 ### What is included in this pack
 
-**BepInEx 5.4** - https://github.com/BepInEx/BepInEx
+**[Doorstop 4](https://github.com/NeighTools/UnityDoorstop)**
+
+This is what loads BepInEx.
+
+**[BepInEx 5.4](https://github.com/BepInEx/BepInEx)**
 
 This is what loads all of your plugins/mods.
 
@@ -33,7 +37,7 @@ This is what loads all of your plugins/mods.
 
 BepInEx config customized for use with RoR2.
 
-**[RoR2BepInExPack](https://github.com/risk-of-thunder/RoR2BepInExPack)
+**[RoR2BepInExPack](https://github.com/risk-of-thunder/RoR2BepInExPack)**
 
 Provides fixes that makes it easier for modders to create and maintain their mods while preventing harmful bugs.
 
