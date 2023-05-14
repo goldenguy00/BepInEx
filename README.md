@@ -1,35 +1,56 @@
-<p align="center">
-    <img src="https://avatars2.githubusercontent.com/u/39589027?s=256">
-</p>
+## BepInEx Framework
 
-# BepInEx
-![Github All Releases](https://img.shields.io/github/downloads/bepinex/bepinex/total.svg)
-![GitHub release](https://img.shields.io/github/release/bepinex/bepinex.svg)
-[![BepInEx Discord](https://user-images.githubusercontent.com/7288322/34429117-c74dbd12-ecb8-11e7-896d-46369cd0de5b.png)](https://discord.gg/MpFEDAg)
+This is the pack of all the things you need to both start using mods, and start making mods using the BepInEx framework.
 
-Bepis Injector Extensible
+To install, extract contents of the inner BepInExPack to the gamefolder, such that the `winhttp.dll` file sits right next to `RiskOfRain2.exe`.
 
----
+The zip looks like:
 
-Unity plugin framework
+```
+\BepInExPack    <----- move the contents of this folder
+manifest.json
+readme.md
+icon.png
+```
 
-**[Latest releases](https://github.com/BepInEx/BepInEx/releases)**
+### What each folder is for:
 
-**[Bleeding Edge builds](https://builds.bepis.io/projects/bepinex_be)**
+-   `BepInEx/plugins` - This is where normal mods/plugins are placed to be loaded. If a mod is just a `NAME.dll` file, it probably goes in here. For your own organisation, consider putting them inside folders, eg: `plugins/ActualRain/ActualRain.dll`
 
-**[How to install](https://bepinex.github.io/bepinex_docs/master/articles/user_guide/installation/index.html)**
+-   `BepInEx/patchers` - These are more advanced types of plugins that need to access Mono.Cecil to edit .dll files during runtime. Only copy paste your mods here if the author tells you to.
 
-**[User and developer guides](https://bepinex.github.io/bepinex_docs/master/articles/index.html)**
+-   `BepInEx/config` - If your plugin has support for configuration, you can find the config file here to edit it.
 
-## Used libraries
-- [NeighTools/UnityDoorstop](https://github.com/NeighTools/UnityDoorstop) - 3.4.0.0 ([8191904](https://github.com/NeighTools/UnityDoorstop/commit/81919046fa3cff331916f26bb5aec0c5d6d25adb))
-- [NeighTools/UnityDoorstop.Unix](https://github.com/NeighTools/UnityDoorstop.Unix) - 1.5.1.0 ([06e9790](https://github.com/NeighTools/UnityDoorstop.Unix/commit/06e979008730cf89c6bcf8806f2c18c80b0a7b21))
-- [BepInEx/HarmonyX](https://github.com/BepInEx/HarmonyX) - 2.7.0 ([2537257](https://github.com/BepInEx/HarmonyX/commit/253725768e59b0e1ea90105cdbcc4a0a477422c7))
-- [MonoMod/MonoMod](https://github.com/MonoMod/MonoMod) - v21.12.13.01 ([ede81f4](https://github.com/MonoMod/MonoMod/commit/ede81f48924d58abf05359409fad740fe2b0dfb5))
-- [jbevain/cecil](https://github.com/jbevain/cecil) - 0.10.4 ([98ec890](https://github.com/jbevain/cecil/commit/98ec890d44643ad88d573e97be0e120435eda732))
+-   `BepInEx/core` - Core BepInEx .dll files, you'll usually never want to touch these files (unless you're updating manually)
 
-## Credits
-- [Usagirei](https://github.com/Usagirei) - Code for using the console and for assisting with technical support
-- [essu](https://github.com/exdownloader) - Project logo, moral support and lots of misc. help
-- [denikson](https://github.com/denikson) - [UnityDoorstop](https://github.com/NeighTools/UnityDoorstop) for the patchless loader
-- [nn@](https://twitter.com/NnAone2cmg) - Japanese translation of the wiki
+### What is included in this pack
+
+**BepInEx 5.4** - https://github.com/BepInEx/BepInEx
+
+This is what loads all of your plugins/mods.
+
+**Customized BepInEx configuration**
+
+BepInEx config customized for use with RoR2.
+
+**[RoR2BepInExPack](https://github.com/risk-of-thunder/RoR2BepInExPack)
+
+Provides fixes that makes it easier for modders to create and maintain their mods while preventing harmful bugs.
+
+### Writing your own mods
+
+There's 2 documentation pages available:
+
+-   [R2Wiki](https://risk-of-thunder.github.io/R2Wiki/)
+-   [BepInEx docs](https://docs.bepinex.dev/)
+
+Places to talk:
+
+-   [RoR2 modding discord](https://discord.gg/5MbXZvd)
+-   [General BepInEx discord](https://discord.gg/MpFEDAg)
+
+BepInEx contains helper libraries like [MonoMod.RuntimeDetour](https://github.com/MonoMod/MonoMod/blob/master/README-RuntimeDetour.md) and [HarmonyX](https://github.com/BepInEx/HarmonyX/wiki)
+
+### Changelog
+
+Available in the `CHANGELOG.md` file
