@@ -1,3 +1,9 @@
+-   **5.4.2110**
+
+    -   RoR2 BepInExPack specific changes :
+        -   Log all hook to the log file, this was previously done by R2API but made debugging harder in some cases where R2API was either initializing too late or for mods that wasn't depending on R2API.
+        -   Add additional event to `SaferAchievementManager` AchievementAttribute collector for mod creators to run custom logic.
+
 -   **5.4.2109**
 
     -   RoR2 BepInExPack specific changes :
