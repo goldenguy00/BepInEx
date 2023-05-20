@@ -1,3 +1,8 @@
+-   **5.4.2111**
+
+    -   RoR2 BepInExPack specific changes :
+        -   Fix the difficulty coefficient not being called at the start of a Run, causing the cost of chests to be incorrect for the first stage when resetting a run or in multiplayer.
+
 -   **5.4.2110**
 
     -   RoR2 BepInExPack specific changes :
