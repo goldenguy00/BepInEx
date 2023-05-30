@@ -1,3 +1,8 @@
+-   **5.4.2112**
+
+    -   RoR2 BepInExPack specific changes :
+        -   The thunderstore `BepInExPack` package no longer directly hosts the two BepInEx patchers, `BepInEx.GUI` and `FixPluginTypesSerialization`, and the `RoR2BepInExPack` plugin, instead, the thunderstore package now has them as dependencies in the thunderstore package manifest.
+
 -   **5.4.2111**
 
     -   RoR2 BepInExPack specific changes :

@@ -37,6 +37,14 @@ This is what loads all of your plugins/mods.
 
 BepInEx config customized for use with RoR2.
 
+**[BepInEx.GUI](https://github.com/risk-of-thunder/BepInEx.GUI)**
+
+Graphical User Interface meant to replace the regular console host that is used by BepInEx when the config setting is enabled.
+
+**[FixPluginTypesSerialization](https://github.com/xiaoxiao921/FixPluginTypesSerialization)**
+
+Enables custom Serializable struct stored in plugin assemblies to be correctly deserialized by the Unity engine's Deserializer.
+
 **[RoR2BepInExPack](https://github.com/risk-of-thunder/RoR2BepInExPack)**
 
 Provides fixes that makes it easier for modders to create and maintain their mods while preventing harmful bugs.
