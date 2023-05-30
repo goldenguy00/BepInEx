@@ -161,12 +161,13 @@ namespace BepInEx.Preloader.Patching
                 AddPatcher(patcher.Value);
         }
 
+        // Remove old BepInEx GUI otherwise both will get loaded
         private static void CleanUpOldBepGui(string directory)
         {
+            // BepInEx GUI V1
             var deletedOldBepGui = false;
             try
             {
-                // Remove old BepInEx GUI otherwise both will get loaded
                 foreach (var directoryPath in Directory.GetDirectories(directory, $"BepInEx_GUI_*_v0*", SearchOption.AllDirectories))
                 {
                     Logger.LogInfo($"Deleting folder: {directoryPath}");
@@ -187,6 +188,36 @@ namespace BepInEx.Preloader.Patching
             {
 				Logger.LogDebug(e);
 			}
+
+            // BepInEx GUI V2
+            try
+            {
+                foreach (var filePath in Directory.GetFiles(directory, $"BepInEx.GUI.Patcher.dll", SearchOption.AllDirectories))
+                {
+					var deletedFolder = false;
+					var bepGuiPatcherdirectory = Directory.GetParent(filePath);
+					if (bepGuiPatcherdirectory.Name == "Patcher")
+					{
+						var bepGuiDirectory = bepGuiPatcherdirectory.Parent;
+						if (bepGuiDirectory.Name == "BepInExGUI")
+						{
+                            Logger.LogInfo($"Deleting folder: {bepGuiDirectory.FullName}");
+                            Directory.Delete(bepGuiDirectory.FullName, true);
+							deletedFolder = true;
+						}
+                    }
+
+					if (!deletedFolder)
+					{
+                        Logger.LogInfo($"Failed deleting BepInEx GUI V2 folder: {filePath}, just deleting the dll as a workaround");
+						File.Delete(filePath);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogDebug(e);
+            }
         }
 
         private static void InitializePatchers()
