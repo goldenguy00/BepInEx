@@ -227,7 +227,7 @@ namespace BepInEx.Preloader.Patching
         private static void EnsureOldBepGuiDoNotLoad(Dictionary<string, List<PatcherPlugin>> patchers)
 		{
 			var bepInExGUIV2dllFullPath = patchers.Keys.FirstOrDefault(assemblyPath => assemblyPath.Contains("BepInEx.GUI.Patcher.dll"));
-            if (patchers.Remove(bepInExGUIV2dllFullPath))
+            if (bepInExGUIV2dllFullPath != null && patchers.Remove(bepInExGUIV2dllFullPath))
 			{
                 Logger.LogInfo($"Removed BepInEx GUI V2 dll from the list of patchers to load");
             }
