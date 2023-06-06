@@ -96,6 +96,8 @@ namespace BepInEx.Preloader.Patching
 
             var patchers = TypeLoader.FindPluginTypes(directory, ToPatcherPlugin);
 
+			EnsureOldBepGuiDoNotLoad(patchers);
+
             foreach (var keyValuePair in patchers)
             {
                 var assemblyPath = keyValuePair.Key;
@@ -194,7 +196,9 @@ namespace BepInEx.Preloader.Patching
             {
                 foreach (var filePath in Directory.GetFiles(directory, $"BepInEx.GUI.Patcher.dll", SearchOption.AllDirectories))
                 {
-					var deletedFolder = false;
+                    Logger.LogInfo($"Found BepInEx GUI V2 {filePath}");
+
+                    var deletedFolder = false;
 					var bepGuiPatcherdirectory = Directory.GetParent(filePath);
 					if (bepGuiPatcherdirectory.Name == "Patcher")
 					{
@@ -217,6 +221,15 @@ namespace BepInEx.Preloader.Patching
             catch (Exception e)
             {
                 Logger.LogDebug(e);
+            }
+        }
+
+        private static void EnsureOldBepGuiDoNotLoad(Dictionary<string, List<PatcherPlugin>> patchers)
+		{
+			var bepInExGUIV2dllFullPath = patchers.Keys.FirstOrDefault(assemblyPath => assemblyPath.Contains("BepInEx.GUI.Patcher.dll"));
+            if (patchers.Remove(bepInExGUIV2dllFullPath))
+			{
+                Logger.LogInfo($"Removed BepInEx GUI V2 dll from the list of patchers to load");
             }
         }
 

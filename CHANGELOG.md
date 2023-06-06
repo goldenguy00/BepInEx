@@ -1,3 +1,8 @@
+-   **5.4.2113**
+
+    -   RoR2 BepInExPack specific changes :
+        -   BepInEx.GUI: Ensure remaining old dll in the patchers folder doesn't get loaded by BepInEx Preloader.
+
 -   **5.4.2112**
 
     -   RoR2 BepInExPack specific changes :
