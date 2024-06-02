@@ -164,6 +164,8 @@ PublishScripts/
 **/packages/*
 # except build/, which is used as an MSBuild target.
 !**/packages/build/
+# except Mono.Cecil.0.10.4 because the Monomod version used is actually depending on 0.11 and we need to hack the dll version number so that Unity 2019.4.37 is happy and load the assemblies that depends on Mono.Cecil
+!**/packages/Mono.Cecil.0.10.4/
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/packages/repositories.config
 # NuGet v3's project.json files produces more ignorable files

@@ -1,3 +1,8 @@
+-   **5.4.2114**
+
+    -   RoR2 BepInExPack specific changes :
+        -   mono.cecil: use a custom mono.cecil dll because the Monomod version used is actually depending on 0.11 and we need to hack the dll version number so that Unity 2019.4.37 is happy and load the assemblies that depends on Mono.Cecil
+
 -   **5.4.2113**
 
     -   RoR2 BepInExPack specific changes :
