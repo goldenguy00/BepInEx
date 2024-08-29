@@ -286,7 +286,7 @@ namespace BepInEx.Preloader
 
         private static readonly ConfigEntry<string> ConfigEntrypointType = ConfigFile.DontModifyCoreConfig.Bind(
             "Preloader.Entrypoint", "Type",
-            "PlatformSystems",
+            "Console",
             "The name of the type in the entrypoint assembly to search for the entrypoint method.");
 
         private static readonly ConfigEntry<string> ConfigEntrypointMethod = ConfigFile.DontModifyCoreConfig.Bind(
