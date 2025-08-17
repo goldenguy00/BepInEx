@@ -482,13 +482,13 @@ namespace BepInEx.Bootstrap
 			_loaded = true;
         }
 		
-		// Remove old RoR2BepInEx otherwise both will get loaded
+		// Remove old RoR2BepInExPack otherwise both will get loaded
 		private static void CleanUpOldRoR2Bep(string pluginDirectory)
 		{
 			try
 			{
-				// from patchers folder
-				var oldPath = Path.Combine(pluginDirectory, "RoR2BepInEx");
+				// from plugins folder
+				var oldPath = Path.Combine(pluginDirectory, "RoR2BepInExPack");
 				if (Directory.Exists(oldPath))
 				{
 					Logger.LogInfo($"Deleting folder: {oldPath}");
