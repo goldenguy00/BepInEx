@@ -91,6 +91,7 @@ namespace BepInEx.Preloader.Patching
                 return;
 
             CleanUpOldBepGui(directory);
+            CleanUpOldRoR2Bep();
 
             var sortedPatchers = new SortedDictionary<string, PatcherPlugin>();
 
@@ -232,6 +233,25 @@ namespace BepInEx.Preloader.Patching
             if (bepInExGUIV2dllFullPath != null && patchers.Remove(bepInExGUIV2dllFullPath))
             {
                 Logger.LogInfo($"Removed BepInEx GUI V2 dll from the list of patchers to load");
+            }
+        }
+
+        // Remove old RoR2BepInEx otherwise both will get loaded
+        private static void CleanUpOldRoR2Bep()
+        {
+            try
+            {
+                // from patchers folder
+                var oldPath = Path.Combine(Paths.PluginPath, "RoR2BepInEx");
+                if (Directory.Exists(oldPath))
+                {
+                    Logger.LogInfo($"Deleting folder: {oldPath}");
+                    Directory.Delete(oldPath, true);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogDebug(e);
             }
         }
 
