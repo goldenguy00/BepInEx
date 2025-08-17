@@ -477,7 +477,7 @@ namespace BepInEx.Bootstrap
 			Logger.LogMessage("Chainloader startup complete");
 
 			_loaded = true;
-        }
+		}
 
 		private static void TryLogPluginThunderstoreManifest(PluginInfo pluginInfo)
 		{
