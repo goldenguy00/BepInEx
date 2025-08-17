@@ -312,9 +312,10 @@ namespace BepInEx.Bootstrap
 
 				UnityEngine.Object.DontDestroyOnLoad(ManagerObject);
 
-                CleanUpOldRoR2Bep(Paths.PluginPath);
+				CleanUpOldRoR2Bep(Paths.PluginPath);
 
-                var pluginsToLoad = TypeLoader.FindPluginTypes(Paths.PluginPath, ToPluginInfo, HasBepinPlugins, "chainloader");
+				var pluginsToLoad = TypeLoader.FindPluginTypes(Paths.PluginPath, ToPluginInfo, HasBepinPlugins, "chainloader");
+
 				foreach (var keyValuePair in pluginsToLoad)
 					foreach (var pluginInfo in keyValuePair.Value)
 						pluginInfo.Location = keyValuePair.Key;
@@ -480,27 +481,27 @@ namespace BepInEx.Bootstrap
 
 			_loaded = true;
         }
+		
+		// Remove old RoR2BepInEx otherwise both will get loaded
+		private static void CleanUpOldRoR2Bep(string pluginDirectory)
+		{
+			try
+			{
+				// from patchers folder
+				var oldPath = Path.Combine(pluginDirectory, "RoR2BepInEx");
+				if (Directory.Exists(oldPath))
+				{
+					Logger.LogInfo($"Deleting folder: {oldPath}");
+					Directory.Delete(oldPath, true);
+				}
+			}
+			catch (Exception e)
+			{
+				Logger.LogDebug(e);
+			}
+		}
 
-        // Remove old RoR2BepInEx otherwise both will get loaded
-        private static void CleanUpOldRoR2Bep(string pluginDirectory)
-        {
-            try
-            {
-                // from patchers folder
-                var oldPath = Path.Combine(pluginDirectory, "RoR2BepInEx");
-                if (Directory.Exists(oldPath))
-                {
-                    Logger.LogInfo($"Deleting folder: {oldPath}");
-                    Directory.Delete(oldPath, true);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.LogDebug(e);
-            }
-        }
-
-        private static void TryLogPluginThunderstoreManifest(PluginInfo pluginInfo)
+		private static void TryLogPluginThunderstoreManifest(PluginInfo pluginInfo)
 		{
 			try
 			{
